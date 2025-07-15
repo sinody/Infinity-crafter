@@ -67,8 +67,10 @@ inp = ''
 
 if os.path.exists("save.json"):
     with open("save.json", 'r') as f:
-        raw_data = json.load(f)
-        print(raw_data)
+        raw_data: dict = json.load(f)
+        for key, i in raw_data["generated_reactions"].items():
+            generated_reactions[tuple(key.split())] = i
+        all_elements = raw_data["all_elements"]
 
 
 while True:
@@ -77,7 +79,7 @@ while True:
     elif inp in ["s", 'save', 'sav', "с", "сохран", "сохранить"]:
         with open("save.json", 'w') as f:
             _generated_reactions = {}
-            for key, i in generated_reactions.values():
+            for key, i in generated_reactions.items():
                 _generated_reactions[" ".join(key)] = i
             json.dump({
                 "generated_reactions": _generated_reactions,
@@ -85,7 +87,8 @@ while True:
             }, f, indent=4)
     if inp.isnumeric():
         num = int(inp)
-        selected.append(list(all_elements)[num])
+        if num < len(all_elements):
+            selected.append(list(all_elements)[num])
     elif inp in ["<", "redo", "prev"]:
         selected.pop(-1)
 
