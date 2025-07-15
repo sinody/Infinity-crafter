@@ -70,7 +70,7 @@ if os.path.exists("save.json"):
         raw_data: dict = json.load(f)
         for key, i in raw_data["generated_reactions"].items():
             generated_reactions[tuple(key.split())] = i
-        all_elements = raw_data["all_elements"]
+        all_elements = set(raw_data["all_elements"])
 
 
 while True:
