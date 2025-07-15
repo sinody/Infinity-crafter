@@ -9,13 +9,6 @@ from g4f.client import Client
 from g4f.client.stubs import ChatCompletion
 from g4f.Provider import Chatai, Blackbox
 
-API_TOKEN_CHUTES = "cpk_dac2568f41164586b571f3de71f52e49.91e867421e795301a68bd530a6c848d7.FfSbCrj4ovgUDmyAWWsNEJY2AMdNDCJA"
-API_TOKEN_DEEPSEEK = "sk-3a8dabfb2d68422ea915963a6c4f95d6"
-API_TOKEN = API_TOKEN_DEEPSEEK
-THINKING_AIS = ["deepseek-ai/DeepSeek-R1"]
-OTHER_AIS = ["deepseek-ai/DeepSeek-V3-0324"]
-
-
 client = Client(provider=Blackbox)
 
 asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())  # Какая-то штука чтобы рантайма в консоли не было
@@ -40,12 +33,8 @@ def get_msg(msg, model="gpt-4", system_msg="", max_tokens=1024, temperature=0.7)
 
 
 def parse_msg(msg: ChatCompletion, model):
-    if model in THINKING_AIS:
-        message = msg.choices[-1].message.content.split("</think>")
-        return [message[-1].strip(), "think:" + message[0].strip()]
-    else:
-        message = msg.choices[-1].message.content
-        return [message.strip()]
+    message = msg.choices[-1].message.content
+    return [message.strip()]
 
 
 def reaction(terms: list, model):
@@ -62,16 +51,12 @@ def reaction(terms: list, model):
         print(f"Post elapsed time: {time.time() - started}")
         msg = parse_msg(msg, model)
 
-        if len(msg) < 2 and model in THINKING_AIS:
-            continue
         if "+" in msg[-1] or "=" in msg[-1]:
             continue
         msg[-1].replace("Ответ:", "")
         return msg[-1].strip()
         # print("think:", message[0].strip())
 
-# 🔥Огонь 🌊Океан
-# ask("Подумай о смысле жизни")
 
 basicConfig(level=ERROR)
 
@@ -79,15 +64,6 @@ all_elements = {"💧Вода", "🔥Огонь", "💨Ветер", "⛰Земл
 selected = []
 generated_reactions = {}
 inp = ''
-
-temp_els_list = {}
-# for i in range(100):
-#     _ = reaction(["💧Вода", '🌊Пар'], model="gpt-4o-mini")
-#     if _ in list(temp_els_list.keys()):
-#         temp_els_list[_] += 1
-#     else:
-#         temp_els_list[_] = 1
-#     print(temp_els_list)
 
 if os.path.exists("save.json"):
     with open("save.json", 'r') as f:
